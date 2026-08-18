@@ -1,11 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, UserPlus, Flame, Heart, Sparkles } from "lucide-react";
 
 export default function DashboardPage() {
+  const [privateIntensity, setPrivateIntensity] = useState("Flirty");
+  const [matchGroupSize, setMatchGroupSize] = useState("2");
+
   return (
     <div className="max-w-6xl mx-auto w-full space-y-8">
       <div className="flex flex-col space-y-2">
@@ -16,8 +20,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Private Room Card */}
         <Card className="glass border-white/10 overflow-hidden relative group">
-          <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <CardHeader>
+          <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+          <CardHeader className="relative z-10">
             <div className="w-12 h-12 rounded-2xl bg-pink-500/20 flex items-center justify-center mb-4 border border-pink-500/30">
               <Heart className="w-6 h-6 text-pink-500" />
             </div>
@@ -26,18 +30,28 @@ export default function DashboardPage() {
               Create a private session and invite your partner with a secure code.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 relative z-10">
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
                 <span className="font-medium">Intensity</span>
                 <div className="flex gap-2">
-                  <span className="px-3 py-1 rounded-full bg-white/10 text-xs font-semibold">Sweet</span>
-                  <span className="px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold">Flirty</span>
-                  <span className="px-3 py-1 rounded-full bg-white/10 text-xs font-semibold">Deep</span>
+                  {["Sweet", "Flirty", "Deep"].map((tier) => (
+                    <button 
+                      key={tier}
+                      onClick={() => setPrivateIntensity(tier)}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+                        privateIntensity === tier 
+                          ? "bg-primary text-primary-foreground" 
+                          : "bg-white/10 hover:bg-white/20 text-muted-foreground"
+                      }`}
+                    >
+                      {tier}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
-            <Link href="/room/new-private" className="block w-full">
+            <Link href={`/room/new-private?tier=${privateIntensity.toLowerCase()}`} className="block w-full">
               <Button className="w-full h-12 text-lg bg-pink-600 hover:bg-pink-700 text-white shadow-[0_0_20px_-5px_rgba(219,39,119,0.5)]">
                 Create Room
               </Button>
@@ -47,8 +61,8 @@ export default function DashboardPage() {
 
         {/* Random Matchmaking Card */}
         <Card className="glass border-white/10 overflow-hidden relative group">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <CardHeader>
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+          <CardHeader className="relative z-10">
             <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 flex items-center justify-center mb-4 border border-indigo-500/30">
               <Users className="w-6 h-6 text-indigo-400" />
             </div>
@@ -57,18 +71,32 @@ export default function DashboardPage() {
               Match with strangers for a thrilling group or couple experience.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 relative z-10">
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
                 <span className="font-medium">Group Size</span>
                 <div className="flex gap-2">
-                  <span className="px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold">2 (1 on 1)</span>
-                  <span className="px-3 py-1 rounded-full bg-white/10 text-xs font-semibold">4</span>
-                  <span className="px-3 py-1 rounded-full bg-white/10 text-xs font-semibold">6</span>
+                  {[
+                    { id: "2", label: "2 (1 on 1)" },
+                    { id: "4", label: "4" },
+                    { id: "6", label: "6" }
+                  ].map((size) => (
+                    <button 
+                      key={size.id}
+                      onClick={() => setMatchGroupSize(size.id)}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+                        matchGroupSize === size.id 
+                          ? "bg-indigo-600 text-white" 
+                          : "bg-white/10 hover:bg-white/20 text-muted-foreground"
+                      }`}
+                    >
+                      {size.label}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
-            <Link href="/matchmaking" className="block w-full">
+            <Link href={`/matchmaking?size=${matchGroupSize}`} className="block w-full">
               <Button className="w-full h-12 text-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-[0_0_20px_-5px_rgba(79,70,229,0.5)]">
                 Find Match
               </Button>

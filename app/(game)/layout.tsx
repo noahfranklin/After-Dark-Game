@@ -2,11 +2,20 @@ import Link from "next/link";
 import { User, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function GameLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const testUser = cookieStore.get("test_user")?.value || "Player 1";
   const isPlayer2 = testUser === "Player 2";
+
+  async function handleLogout() {
+    "use server";
+    const store = await cookies();
+    store.delete("test_user");
+    // TODO: Add Supabase signOut logic here in the future
+    redirect("/");
+  }
 
   return (
     <div className="min-h-screen flex flex-col relative">
@@ -27,9 +36,11 @@ export default async function GameLayout({ children }: { children: React.ReactNo
             </div>
             <span className="text-sm font-medium">{testUser}</span>
           </div>
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-            <LogOut className="w-5 h-5" />
-          </Button>
+          <form action={handleLogout}>
+            <Button type="submit" variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" title="Log Out">
+              <LogOut className="w-5 h-5" />
+            </Button>
+          </form>
         </div>
       </header>
 

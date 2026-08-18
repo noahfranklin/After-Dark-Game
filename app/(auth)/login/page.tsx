@@ -16,8 +16,12 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // TODO: implement Supabase auth login
-    setTimeout(() => setLoading(false), 1000);
+    // Mock login delay then redirect
+    setTimeout(() => {
+      setLoading(false);
+      document.cookie = `test_user=Player 1; path=/; max-age=86400`;
+      router.push("/dashboard");
+    }, 1000);
   };
 
   const handleTestLogin = (playerName: string) => {

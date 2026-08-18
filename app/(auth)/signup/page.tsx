@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,12 +10,17 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 export default function SignupPage() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // TODO: implement Supabase auth signup
-    setTimeout(() => setLoading(false), 1000);
+    // Mock signup delay then redirect
+    setTimeout(() => {
+      setLoading(false);
+      document.cookie = `test_user=Player 1; path=/; max-age=86400`;
+      router.push("/dashboard");
+    }, 1000);
   };
 
   return (
